@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A political and social art archive told through a centered scrollytelling sequence.">
+  <title>Political And Social Art Archive | Sining ng Pakikibaka</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&amp;family=DM+Mono:wght@400;500&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header" data-header>
+    <nav class="reference-nav" aria-label="Primary navigation">
+      <a href="#archive-sequence">Home</a>
+      <a href="#archive-sequence">Archive</a>
+      <a href="#about">About</a>
+      <span class="blade-mark" aria-label="Bolo blade emblem" role="img">
+        <svg viewBox="0 0 120 48" aria-hidden="true" focusable="false">
+          <path class="blade-edge" d="M37 18C55 8 79 5 113 8L96 19C77 30 55 35 38 31L28 25Z"></path>
+          <path class="blade-spine" d="M37 18C57 7 82 4 113 8C82 12 59 19 39 27L28 25Z"></path>
+          <path class="blade-handle" d="M8 19L29 21L39 28L34 36L12 30Z"></path>
+          <path class="blade-guard" d="M27 17L39 20L35 35L25 31Z"></path>
+        </svg>
+      </span>
+      <a href="#search">Search</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <span class="sequence-counter" data-counter aria-hidden="true">01 / 11</span>
+  </header>
+
+  <main>
+    <section class="scrollytelling" id="archive-sequence" aria-label="Political and social art archive sequence">
+      <div class="texture" aria-hidden="true"></div>
+      <div class="progress-track" aria-hidden="true"><span data-progress></span></div>
+      <p class="archive-label">Archive no. 001 / Manila</p>
+      <p class="scroll-instruction">Scroll to move through the archive <span aria-hidden="true">↓</span></p>
+
+      <div class="sequence-viewport" data-sequence-viewport>
+        <article class="sequence-step is-active hero-step" data-step="hero" aria-roledescription="slide" aria-label="Hero view">
+          <div class="hero-copy" data-parallax>
+            <h1><span>Political</span><span>And Social</span><span>Art</span><span>Archive</span></h1>
+          </div>
+          <div class="monument" aria-label="Bonifacio Monument cutout" role="img">
+            <img src="assets/boni.png" alt="Bonifacio Monument">
+          </div>
+        </article>
+
+        <article class="sequence-step monument-full-step" data-step="monument-full" aria-roledescription="slide" aria-label="Full Bonifacio Monument view">
+          <div class="exploration-page">
+            <img class="exploration-hero" src="assets/boni.png" alt="Full Bonifacio Monument">
+            <div class="exploration-cards">
+              <article class="explore-card category-card" tabindex="0" role="button" data-category="The K.K.K. Revolution">
+                <img src="assets/boni.png" alt="Bonifacio Monument detail">
+                <h2>The K.K.K.<br>Revolution</h2>
+                <p>Explore key works from the Katipunan era.</p>
+              </article>
+              <article class="explore-card category-card" tabindex="0" role="button" data-category="Art &amp; Activism">
+                <img src="assets/art-activism.jpg" alt="Political poster artwork">
+                <h2>Art &amp; Activism</h2>
+                <p>A deep dive into social realism and protest art.</p>
+              </article>
+              <article class="explore-card category-card" tabindex="0" role="button" data-category="Colonialism's End">
+                <img src="assets/art-colonialism.jpg" alt="Gallery artwork">
+                <h2>Colonialism's<br>End</h2>
+                <p>Global parallels of anti-colonial art.</p>
+              </article>
+            </div>
+            <button class="load-more" type="button">Load more categories</button>
+          </div>
+        </article>
+
+        <article class="sequence-step monument-detail-step" data-step="monument-details" aria-roledescription="slide" aria-label="Bonifacio Monument information">
+          <div class="spotlight-page">
+            <div class="spotlight-categories">
+              <article class="mini-card category-card" tabindex="0" role="button" data-category="The K.K.K. Revolution"><img src="assets/boni.png" alt="The K.K.K. Revolution"><h3>The K.K.K.<br>Revolution</h3><p>Explore key works from the Katipunan era.</p></article>
+              <article class="mini-card category-card" tabindex="0" role="button" data-category="Art &amp; Activism"><img src="assets/art-activism.jpg" alt="Art and activism"><h3>Art &amp; Activism</h3><p>A deep dive into social realism and protest art.</p></article>
+              <article class="mini-card category-card" tabindex="0" role="button" data-category="Colonialism's End"><img src="assets/art-colonialism.jpg" alt="Colonialism's end"><h3>Colonialism's<br>End</h3><p>Global parallels of anti-colonial art.</p></article>
+            </div>
+            <h2 class="spotlight-heading">Exhibit spotlight: <strong>The Cry of Bonifacio</strong></h2>
+            <div class="spotlight-feature">
+              <img src="assets/boni.png" alt="The Cry of Bonifacio exhibit">
+              <div class="documentary-card"><iframe src="https://www.youtube.com/embed/dNCbHclingM?rel=0" title="The Bonifacio Monument in Caloocan documentary" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><h3>The Bonifacio Monument: revolutionary memory in stone</h3></div>
+            </div>
+            <div class="spotlight-copy">
+              <img src="assets/boni.png" alt="Bonifacio Monument detail">
+              <p>Curatorial text joins the Filipino revolutionary story with the monument’s visual language and the many artists who keep its call alive.</p>
+              <img src="assets/boni.png" alt="Bonifacio Monument detail">
+              <p>The exhibit traces how collective memory becomes an active form of resistance across generations.</p>
+            </div>
+            <footer class="spotlight-footer"><button data-view-exhibits type="button">View all exhibits</button></footer>
+          </div>
+        </article>
+
+        <div data-artwork-steps></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="category-modal" data-category-modal hidden>
+    <div class="category-modal-panel" role="dialog" aria-modal="true" aria-labelledby="category-modal-title">
+      <button class="category-modal-close" type="button" data-close-category aria-label="Close category information">×</button>
+      <p class="eyebrow">Archive category</p>
+      <h2 id="category-modal-title"></h2>
+      <p id="category-modal-copy"></p>
+      <p class="context-note" id="category-modal-context"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
