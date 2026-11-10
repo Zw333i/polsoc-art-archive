@@ -62,8 +62,17 @@
                 <h2>Colonialism's<br>End</h2>
                 <p>Global parallels of anti-colonial art.</p>
               </article>
+              <article class="explore-card category-card" tabindex="0" role="button" data-category="Labor &amp; Land">
+                <img src="assets/art-after-sirens.jpg" alt="Workers clearing debris from a shoreline">
+                <h2>Labor &amp;<br>Land</h2>
+                <p>Art made in defense of workers and the earth.</p>
+              </article>
+              <article class="explore-card category-card" tabindex="0" role="button" data-category="Press Freedom">
+                <img src="assets/art-signal-noise.jpg" alt="Stacked newspapers">
+                <h2>Press<br>Freedom</h2>
+                <p>Images that keep public truth visible.</p>
+              </article>
             </div>
-            <button class="load-more" type="button">Load more categories</button>
           </div>
         </article>
 
@@ -73,8 +82,17 @@
               <h2 class="spotlight-heading">Exhibit spotlight: <strong data-spotlight-title></strong></h2>
               <p class="spotlight-count" data-spotlight-count aria-live="polite"></p>
             </div>
+            <div class="spotlight-filter" data-spotlight-filter hidden>
+              <span>Filtered by category: <strong data-spotlight-filter-name></strong></span>
+              <button type="button" data-clear-filter>Clear filter ×</button>
+            </div>
+            <div class="spotlight-empty" data-spotlight-empty hidden>
+              <p>No works in this category yet.</p>
+              <button type="button" data-clear-filter>Show all works</button>
+            </div>
             <div class="spotlight-slide" data-spotlight-slide>
               <p class="spotlight-meta" data-spotlight-meta></p>
+              <p class="spotlight-tags" data-spotlight-tags></p>
               <div class="spotlight-stage">
                 <button class="spotlight-arrow is-prev" type="button" data-spotlight-prev aria-label="Previous artwork">
                   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"></path></svg>
@@ -85,7 +103,6 @@
                 </button>
               </div>
               <p class="spotlight-lede" data-spotlight-lede></p>
-              <div class="spotlight-copy" data-spotlight-notes></div>
               <blockquote class="spotlight-quote" data-spotlight-quote hidden></blockquote>
             </div>
             <footer class="spotlight-footer"><button data-view-exhibits type="button">View all exhibits</button></footer>
@@ -97,7 +114,9 @@
             <p class="eyebrow">Collection</p>
             <h2 class="archive-title" id="archive-title">The Archive</h2>
             <p class="archive-intro">Every work in the collection. Select one to open it in the exhibit spotlight.</p>
-            <div class="archive-grid" data-archive-grid></div>
+          </div>
+          <div class="archive-marquee" data-archive-marquee role="region" aria-label="All artworks">
+            <div class="archive-track" data-archive-grid></div>
           </div>
         </article>
       </div>
@@ -111,6 +130,29 @@
       <h2 id="category-modal-title"></h2>
       <p id="category-modal-copy"></p>
       <p class="context-note" id="category-modal-context"></p>
+      <div class="category-works">
+        <p class="category-works-label">In the archive</p>
+        <ul class="category-works-list" data-category-works></ul>
+        <p class="category-works-note" data-category-note></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="category-modal hotspot-modal" data-hotspot-modal hidden>
+    <div class="category-modal-panel hotspot-panel" role="dialog" aria-modal="true" aria-labelledby="hotspot-modal-title">
+      <button class="category-modal-close" type="button" data-close-hotspot aria-label="Close detail">×</button>
+      <div class="hotspot-media">
+        <div class="hotspot-crop" data-hotspot-crop></div>
+        <button class="hotspot-nav is-prev" type="button" data-hotspot-prev aria-label="Previous detail">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"></path></svg>
+        </button>
+        <button class="hotspot-nav is-next" type="button" data-hotspot-next aria-label="Next detail">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"></path></svg>
+        </button>
+      </div>
+      <p class="eyebrow" data-hotspot-eyebrow></p>
+      <h2 id="hotspot-modal-title"></h2>
+      <p data-hotspot-text></p>
     </div>
   </div>
 
