@@ -13,9 +13,7 @@
 <body>
   <header class="site-header" data-header>
     <nav class="reference-nav" aria-label="Primary navigation">
-      <a href="#archive-sequence">Home</a>
-      <a href="#archive-sequence">Archive</a>
-      <a href="#about">About</a>
+      <a href="#archive-sequence" class="is-current" data-nav="home">Home</a>
       <span class="blade-mark" aria-label="Bolo blade emblem" role="img">
         <svg viewBox="0 0 120 48" aria-hidden="true" focusable="false">
           <path class="blade-edge" d="M37 18C55 8 79 5 113 8L96 19C77 30 55 35 38 31L28 25Z"></path>
@@ -24,10 +22,9 @@
           <path class="blade-guard" d="M27 17L39 20L35 35L25 31Z"></path>
         </svg>
       </span>
-      <a href="#search">Search</a>
-      <a href="#contact">Contact</a>
+      <a href="#archive" data-nav="archive">Archive</a>
     </nav>
-    <span class="sequence-counter" data-counter aria-hidden="true">01 / 11</span>
+    <span class="sequence-counter" data-counter aria-hidden="true">01 / 03</span>
   </header>
 
   <main>
@@ -38,7 +35,7 @@
       <p class="scroll-instruction">Scroll to move through the archive <span aria-hidden="true">↓</span></p>
 
       <div class="sequence-viewport" data-sequence-viewport>
-        <article class="sequence-step is-active hero-step" data-step="hero" aria-roledescription="slide" aria-label="Hero view">
+        <article class="sequence-step hero-step" data-step="hero" aria-label="Hero view">
           <div class="hero-copy" data-parallax>
             <h1><span>Political</span><span>And Social</span><span>Art</span><span>Archive</span></h1>
           </div>
@@ -47,9 +44,8 @@
           </div>
         </article>
 
-        <article class="sequence-step monument-full-step" data-step="monument-full" aria-roledescription="slide" aria-label="Full Bonifacio Monument view">
+        <article class="sequence-step monument-full-step" id="explore" data-step="monument-full" aria-label="Full Bonifacio Monument view">
           <div class="exploration-page">
-            <img class="exploration-hero" src="assets/boni.png" alt="Full Bonifacio Monument">
             <div class="exploration-cards">
               <article class="explore-card category-card" tabindex="0" role="button" data-category="The K.K.K. Revolution">
                 <img src="assets/boni.png" alt="Bonifacio Monument detail">
@@ -71,29 +67,39 @@
           </div>
         </article>
 
-        <article class="sequence-step monument-detail-step" data-step="monument-details" aria-roledescription="slide" aria-label="Bonifacio Monument information">
-          <div class="spotlight-page">
-            <div class="spotlight-categories">
-              <article class="mini-card category-card" tabindex="0" role="button" data-category="The K.K.K. Revolution"><img src="assets/boni.png" alt="The K.K.K. Revolution"><h3>The K.K.K.<br>Revolution</h3><p>Explore key works from the Katipunan era.</p></article>
-              <article class="mini-card category-card" tabindex="0" role="button" data-category="Art &amp; Activism"><img src="assets/art-activism.jpg" alt="Art and activism"><h3>Art &amp; Activism</h3><p>A deep dive into social realism and protest art.</p></article>
-              <article class="mini-card category-card" tabindex="0" role="button" data-category="Colonialism's End"><img src="assets/art-colonialism.jpg" alt="Colonialism's end"><h3>Colonialism's<br>End</h3><p>Global parallels of anti-colonial art.</p></article>
+        <article class="sequence-step monument-detail-step" id="spotlight" data-step="spotlight" aria-label="Exhibit spotlight">
+          <div class="spotlight-page" aria-roledescription="carousel" aria-label="Exhibit spotlight">
+            <div class="spotlight-head">
+              <h2 class="spotlight-heading">Exhibit spotlight: <strong data-spotlight-title></strong></h2>
+              <p class="spotlight-count" data-spotlight-count aria-live="polite"></p>
             </div>
-            <h2 class="spotlight-heading">Exhibit spotlight: <strong>The Cry of Bonifacio</strong></h2>
-            <div class="spotlight-feature">
-              <img src="assets/boni.png" alt="The Cry of Bonifacio exhibit">
-              <div class="documentary-card"><iframe src="https://www.youtube.com/embed/dNCbHclingM?rel=0" title="The Bonifacio Monument in Caloocan documentary" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><h3>The Bonifacio Monument: revolutionary memory in stone</h3></div>
-            </div>
-            <div class="spotlight-copy">
-              <img src="assets/boni.png" alt="Bonifacio Monument detail">
-              <p>Curatorial text joins the Filipino revolutionary story with the monument’s visual language and the many artists who keep its call alive.</p>
-              <img src="assets/boni.png" alt="Bonifacio Monument detail">
-              <p>The exhibit traces how collective memory becomes an active form of resistance across generations.</p>
+            <div class="spotlight-slide" data-spotlight-slide>
+              <p class="spotlight-meta" data-spotlight-meta></p>
+              <div class="spotlight-stage">
+                <button class="spotlight-arrow is-prev" type="button" data-spotlight-prev aria-label="Previous artwork">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"></path></svg>
+                </button>
+                <div class="spotlight-feature" data-spotlight-feature></div>
+                <button class="spotlight-arrow is-next" type="button" data-spotlight-next aria-label="Next artwork">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"></path></svg>
+                </button>
+              </div>
+              <p class="spotlight-lede" data-spotlight-lede></p>
+              <div class="spotlight-copy" data-spotlight-notes></div>
+              <blockquote class="spotlight-quote" data-spotlight-quote hidden></blockquote>
             </div>
             <footer class="spotlight-footer"><button data-view-exhibits type="button">View all exhibits</button></footer>
           </div>
         </article>
 
-        <div data-artwork-steps></div>
+        <article class="sequence-step archive-step" id="archive" data-step="archive" aria-labelledby="archive-title">
+          <div class="archive-page">
+            <p class="eyebrow">Collection</p>
+            <h2 class="archive-title" id="archive-title">The Archive</h2>
+            <p class="archive-intro">Every work in the collection. Select one to open it in the exhibit spotlight.</p>
+            <div class="archive-grid" data-archive-grid></div>
+          </div>
+        </article>
       </div>
     </section>
   </main>
