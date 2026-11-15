@@ -22,7 +22,7 @@
 
 * { box-sizing: border-box; }
 html { background: var(--charcoal); scroll-behavior: smooth; }
-body { background: var(--charcoal); color: var(--paper); font-family: var(--body); margin: 0; overflow-x: hidden; }
+body { background: var(--charcoal); color: var(--paper); font-family: var(--body); margin: 0; overflow-x: clip; }
 button, a { font: inherit; }
 a { color: inherit; text-decoration: none; }
 
@@ -62,8 +62,6 @@ a { color: inherit; text-decoration: none; }
 .scrollytelling {
   background: #1e2325;
   min-height: 100vh;
-  overflow: hidden;
-  overscroll-behavior: none;
   position: relative;
 }
 .texture {
