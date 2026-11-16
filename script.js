@@ -348,12 +348,43 @@ const spotlight = {
   feature: document.querySelector("[data-spotlight-feature]"),
   lede: document.querySelector("[data-spotlight-lede]"),
   quote: document.querySelector("[data-spotlight-quote]"),
+  notes: document.querySelector("[data-spotlight-notes]"),
+  notesToggle: document.querySelector("[data-spotlight-notes-toggle]"),
+  toggleButton: document.querySelector("[data-spotlight-toggle]"),
+  toggleLabel: document.querySelector("[data-spotlight-toggle-label]"),
   tags: document.querySelector("[data-spotlight-tags]"),
   filter: document.querySelector("[data-spotlight-filter]"),
   filterName: document.querySelector("[data-spotlight-filter-name]"),
   empty: document.querySelector("[data-spotlight-empty]"),
   arrows: document.querySelectorAll(".spotlight-arrow")
 };
+
+// Show more / show less: the lede + quote block under the artwork.
+// Flip this to true if you'd rather the text start open on every visit.
+const NOTES_OPEN_BY_DEFAULT = false;
+// The reader's choice carries over to the next artwork. Set this to true to make
+// every slide start collapsed again.
+const NOTES_RESET_PER_SLIDE = false;
+const NOTES_LABELS = { closed: "Show more", open: "Show less" };
+let notesOpen = NOTES_OPEN_BY_DEFAULT;
+
+function applyNotesState() {
+  spotlight.notes.hidden = !notesOpen;
+  spotlight.toggleButton.setAttribute("aria-expanded", String(notesOpen));
+  spotlight.toggleLabel.textContent = notesOpen ? NOTES_LABELS.open : NOTES_LABELS.closed;
+}
+
+spotlight.toggleButton.addEventListener("click", () => {
+  notesOpen = !notesOpen;
+  applyNotesState();
+  // Opening it: glide down to the text that just appeared. `block: "center"` parks
+  // it mid-screen; use "start" to put it just under the header instead.
+  if (notesOpen) {
+    window.requestAnimationFrame(() => {
+      spotlight.notes.scrollIntoView({ behavior: scrollBehavior(), block: "center" });
+    });
+  }
+});
 
 // Category filter: the spotlight cycles through `spotlightList`, which is either every
 // artwork or only those in the active category.
@@ -408,7 +439,7 @@ function renderSpotlight() {
 
   const side = art.media
     ? `<div class="documentary-card"><iframe src="${escapeHtml(art.media.src)}" title="${escapeHtml(art.media.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><h3>${escapeHtml(art.media.caption)}</h3></div>`
-    : `<div class="spotlight-panel"><dl>${(art.facts || []).map(([term, value]) => `<div><dt>${escapeHtml(term)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}</dl>${art.credit || art.source ? `<p class="spotlight-credit">${art.credit ? `<span>${escapeHtml(art.credit)}</span>` : ""}${art.source ? `<a href="${escapeHtml(art.source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(art.source.label)} ↗</a>` : ""}</p>` : ""}</div>`;
+    : `<div class="spotlight-panel"><div class="spotlight-panel-main"><dl>${(art.facts || []).map(([term, value]) => `<div><dt>${escapeHtml(term)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}</dl><div data-notes-slot></div></div>${art.credit || art.source ? `<p class="spotlight-credit">${art.credit ? `<span>${escapeHtml(art.credit)}</span>` : ""}${art.source ? `<a href="${escapeHtml(art.source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(art.source.label)} ↗</a>` : ""}</p>` : ""}</div>`;
   const hotspots = art.hotspots || [];
   const hotspotButtons = hotspots.map((spot, index) =>
     `<button class="hotspot" type="button" data-hotspot="${index}" style="left: ${spot.x}%; top: ${spot.y}%" aria-label="Open detail: ${escapeHtml(spot.label)}"><span aria-hidden="true"></span></button>`
@@ -422,6 +453,22 @@ function renderSpotlight() {
 
   spotlight.quote.hidden = !art.quote;
   spotlight.quote.innerHTML = art.quote ? `<p>“${escapeHtml(art.quote.text)}”</p><cite>${escapeHtml(art.quote.cite)}</cite>` : "";
+
+  // The toggle rides inside the detail panel (under CAMPAIGN) when there is one;
+  // works that show a documentary card instead keep it under the artwork.
+  const slot = spotlight.feature.querySelector("[data-notes-slot]");
+  if (slot) slot.appendChild(spotlight.notesToggle);
+  else spotlight.notes.before(spotlight.notesToggle);
+
+  // Nothing to reveal for a work with no lede and no quote: drop the button too.
+  const hasNotes = Boolean(art.lede || art.quote);
+  spotlight.notesToggle.hidden = !hasNotes;
+  if (NOTES_RESET_PER_SLIDE) notesOpen = NOTES_OPEN_BY_DEFAULT;
+  if (!hasNotes) {
+    spotlight.notes.hidden = true;
+    return;
+  }
+  applyNotesState();
 }
 
 function showSpotlight(index, direction = 1) {
@@ -610,10 +657,6 @@ archiveGrid.addEventListener("click", event => {
 });
 
 renderSpotlight();
-
-document.querySelector("[data-view-exhibits]").addEventListener("click", () => {
-  document.querySelector("#archive").scrollIntoView({ behavior: scrollBehavior() });
-});
 
 const navLinks = {
   home: document.querySelector('[data-nav="home"]'),

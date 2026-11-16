@@ -7,6 +7,11 @@
   --red: #e63946;
   --blue: #1d3557;
   --line: rgba(232, 228, 220, .16);
+  /* Width of the exhibit spotlight column. Raise/lower this one number to widen
+     or narrow that section (930px was the original). If you push it past ~1100px,
+     also raise the 1190px breakpoint near .spotlight-arrow so the side arrows
+     still have room to sit outside the frame. */
+  --spotlight-w: 1080px; /* PANG ADJUST */
   /* Type: three families, one per role. */
   --display: "Barlow Condensed", Impact, sans-serif; /* titles */
   --mono: "DM Mono", monospace;                      /* subheadings, labels */
@@ -108,6 +113,7 @@ h1 span:nth-child(4) { color: #ded9cf; text-shadow: none; }
 .monument-detail-step { padding-top: 64px; padding-bottom: 48px; }
 .exploration-page, .spotlight-page, .archive-page { margin: 0 auto; max-width: 930px; width: 100%; }
 .exploration-page { max-width: 1440px; }
+.spotlight-page { max-width: var(--spotlight-w); }
 .exploration-cards { display: grid; gap: clamp(10px, 1.4vw, 22px); grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 8px auto 0; }
 .explore-card { background: #202526; border: 1px solid rgba(232,228,220,.2); box-shadow: 0 8px 0 rgba(0,0,0,.24); padding: clamp(9px, .8vw, 12px); }
 .category-card { cursor: pointer; transition: border-color .2s ease, transform .2s ease; }
@@ -180,6 +186,8 @@ h1 span:nth-child(4) { color: #ded9cf; text-shadow: none; }
 .documentary-card iframe { border: 0; height: 240px; width: 100%; }
 .documentary-card h3 { font: 800 var(--fs-heading)/.95 var(--display); margin: 10px 0 0; text-transform: uppercase; }
 .spotlight-panel { background: #050707; display: flex; flex-direction: column; justify-content: space-between; min-height: 300px; padding: 18px; }
+/* Facts + the show-more button ride together at the top; the credit stays pinned at the bottom. */
+.spotlight-panel-main { display: block; }
 .spotlight-panel dl { display: grid; gap: 12px; margin: 0; }
 .spotlight-panel dt { color: var(--red); font: 500 var(--fs-label) var(--mono); letter-spacing: .08em; margin-bottom: 3px; text-transform: uppercase; }
 .spotlight-panel dd { color: var(--paper); font-size: var(--fs-small); line-height: 1.5; margin: 0; }
@@ -188,12 +196,24 @@ h1 span:nth-child(4) { color: #ded9cf; text-shadow: none; }
 .spotlight-credit a:hover, .spotlight-credit a:focus-visible { color: var(--paper); text-decoration: underline; }
 /* Portrait works (posters) get a taller frame so they stay legible. */
 .spotlight-image.is-portrait { --frame-h: 480px; }
+/* Show more / show less toggle for the lede + quote block. */
+.spotlight-notes-toggle { border-top: 1px solid var(--line); margin: 22px 0 0; padding-top: 14px; }
+.spotlight-notes-toggle[hidden], .spotlight-notes[hidden] { display: none; }
+.spotlight-notes-toggle button { align-items: center; background: transparent; border: 1px solid var(--paper); color: var(--paper); cursor: pointer; display: inline-flex; font: 500 var(--fs-label) var(--mono); gap: 8px; letter-spacing: .08em; padding: 8px 10px; text-transform: uppercase; transition: background .2s ease, border-color .2s ease; }
+.spotlight-notes-toggle button:hover, .spotlight-notes-toggle button:focus-visible { background: var(--red); border-color: var(--red); outline: none; }
+.spotlight-notes-toggle svg { fill: none; height: 14px; stroke: currentColor; stroke-linecap: square; stroke-width: 2; transition: transform .2s ease; width: 14px; }
+.spotlight-notes-toggle button[aria-expanded="true"] svg { transform: rotate(180deg); }
+/* Inside the detail panel it sits right under CAMPAIGN, so it loses the divider rule.
+   Change the 18px to move it further from / closer to the campaign line. */
+.spotlight-panel .spotlight-notes-toggle { border-top: 0; margin: 18px 0 0; padding-top: 0; }
+.spotlight-panel .spotlight-notes-toggle button { width: 100%; justify-content: space-between; }
 .spotlight-lede { border-left: 3px solid var(--red); color: var(--paper); font-size: var(--fs-body); line-height: 1.6; margin: 22px 0 0; max-width: 760px; padding-left: 14px; }
 .spotlight-quote { border-top: 1px solid var(--line); margin: 24px 0 0; padding-top: 18px; }
 .spotlight-quote[hidden] { display: none; }
 .spotlight-quote p { font: 800 var(--fs-heading)/1.05 var(--display); margin: 0; max-width: 780px; text-transform: uppercase; }
 .spotlight-quote cite { color: var(--muted); display: block; font: normal 500 var(--fs-label) var(--mono); letter-spacing: .08em; margin-top: 10px; text-transform: uppercase; }
-@media (max-width: 1080px) {
+/* Below this width the spotlight column fills the screen, so the arrows move inside the frame. */
+@media (max-width: 1190px) {
   .spotlight-arrow.is-prev { left: 8px; }
   .spotlight-arrow.is-next { right: 8px; }
   .spotlight-arrow { top: 150px; }
@@ -235,10 +255,6 @@ h1 span:nth-child(4) { color: #ded9cf; text-shadow: none; }
 .archive-card-meta { color: var(--red); font: 500 var(--fs-label) var(--mono); letter-spacing: .08em; text-transform: uppercase; }
 .archive-card-title { font: 800 var(--fs-heading)/.9 var(--display); text-transform: uppercase; }
 .archive-card-summary { color: var(--muted); font-size: var(--fs-small); line-height: 1.5; }
-.spotlight-footer { align-items: center; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; padding-top: 14px; }
-.spotlight-footer button { background: transparent; border: 1px solid var(--paper); color: var(--paper); cursor: pointer; font: 500 var(--fs-label) var(--mono); letter-spacing: .08em; padding: 8px 10px; text-transform: uppercase; }
-.spotlight-footer button:hover { background: var(--red); border-color: var(--red); }
-.spotlight-footer button:last-child { flex-basis: 100px; margin: 0 auto; }
 .category-modal { align-items: center; background: rgba(5,7,8,.88); display: flex; inset: 0; justify-content: center; padding: 20px; position: fixed; z-index: 31; }
 .category-modal[hidden] { display: none; }
 .category-modal-panel { background: var(--paper); color: var(--ink); max-height: calc(100vh - 40px); max-width: 560px; overflow-y: auto; padding: 40px; position: relative; width: 100%; }
@@ -291,7 +307,6 @@ h1 span:nth-child(4) { color: #ded9cf; text-shadow: none; }
   .category-work { grid-template-columns: 56px 1fr; }
   .category-work-go { display: none; }
   .archive-card { width: 72vw; }
-  .spotlight-footer input { width: 145px; }
   .monument-full-step, .monument-detail-step { padding-left: 20px; padding-right: 20px; }
   .monument-detail-step { padding-top: 48px; }
 }

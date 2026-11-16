@@ -102,10 +102,19 @@
                   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"></path></svg>
                 </button>
               </div>
-              <p class="spotlight-lede" data-spotlight-lede></p>
-              <blockquote class="spotlight-quote" data-spotlight-quote hidden></blockquote>
+              <!-- Lives here by default; renderSpotlight() moves it into the detail
+                   panel (under CAMPAIGN) whenever that panel is on screen. -->
+              <div class="spotlight-notes-toggle" data-spotlight-notes-toggle hidden>
+                <button type="button" data-spotlight-toggle aria-expanded="false" aria-controls="spotlight-notes">
+                  <span data-spotlight-toggle-label>Show more</span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 9l7 7 7-7"></path></svg>
+                </button>
+              </div>
+              <div class="spotlight-notes" id="spotlight-notes" data-spotlight-notes hidden>
+                <p class="spotlight-lede" data-spotlight-lede></p>
+                <blockquote class="spotlight-quote" data-spotlight-quote hidden></blockquote>
+              </div>
             </div>
-            <footer class="spotlight-footer"><button data-view-exhibits type="button">View all exhibits</button></footer>
           </div>
         </article>
 
