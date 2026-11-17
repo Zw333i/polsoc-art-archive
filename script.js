@@ -119,7 +119,6 @@ document.addEventListener("keydown", event => {
 //   categories: names matching the category cards' data-category exactly; they
 //           drive the category filter, the category modal's list and the slide tags
 //   fit:    "contain" for cutouts (transparent PNG), "cover" for photographs
-//   media:  optional video shown beside the image; otherwise `facts` are shown
 //   ratio:  the image's width / height, so hotspots line up with the picture
 //           (portrait images, ratio < 1, get a taller spotlight frame)
 //   source: optional { label, url } link to the original post, shown in the facts panel
@@ -132,25 +131,30 @@ const artworks = [
     id: "cry-of-bonifacio",
     categories: ["The K.K.K. Revolution"],
     title: "Kartilya ng Katipunan",
-    image: "assets/boni.png",
-    alt: "Andres Bonifacio raising a bolo above sculpted revolutionaries and Katipunan flags",
+    image: "assets/kkk monument.png",
+    alt: "The Kartilya ng Katipunan monument in Manila, with Andres Bonifacio raising a bolo above gathered revolutionaries",
     fit: "contain",
-    meta: "Bonifacio Shrine",
-    summary: "Revolutionary memory in stone: the Katipunan and the 1896 Revolution in public space.",
-    lede: "A portrayal of the Katipunan’s call to revolution, where Andres Bonifacio, bolo raised beneath the banners of the K.K.K., leads the people to rise against more than three centuries of Spanish colonial rule.",
+    meta: "1998 · Monument · Ermita, Manila",
+    summary: "Revolutionary memory in bronze: the Kartilya ng Katipunan and the ideals of collective struggle.",
+    lede: "A portrayal of the Katipunan’s call to revolution, where Andres Bonifacio, bolo raised above gathered revolutionaries, turns the principles of the Kartilya into a public image of courage, equality, and collective action.",
+    facts: [
+      ["Title", "Kartilya ng Katipunan"],
+      ["Year", "1998"],
+      ["Artist", "Eduardo Castrillo"],
+      ["Site", "Bonifacio Shrine, Ermita, Manila"],
+      ["Medium", "Bronze monument and sculpture"]
+    ],
     quote: {
       text: "Which love could ever surpass, in purity and greatness, the love of one’s native land? Which love? None, truly none.",
       cite: "Andres Bonifacio, “Pag-ibig sa Tinubuang Lupa” (Kalayaan, 1896; English translation)"
     },
-    media: {
-      src: "https://youtube.com/embed/RGcZmywiWww?si=3mgV21Np_opC0CGy",
-      title: "The Bonifacio Shrine",
-      caption: "The Bonifacio Shrine"
-    },
     ratio: 1200 / 800,
     hotspots: [
-      { x: 63, y: 27, label: "Bonifacio’s call", text: "Curatorial text joins the Filipino revolutionary story with the monument’s visual language and the many artists who keep its call alive." },
-      { x: 57, y: 66, label: "The gathered revolutionaries", text: "The exhibit traces how collective memory becomes an active form of resistance across generations." }
+      { x: 63, y: 27, label: "Bonifacio’s call", text: "Bonifacio stands above the gathered figures with his bolo raised, turning the monument’s central gesture into a call for courage and collective action." },
+      { x: 57, y: 66, label: "The gathered revolutionaries", text: "The figures below him make the struggle collective rather than individual. Their different poses suggest a people assembling around a shared demand for freedom." },
+      { x: 79, y: 37, label: "The Katipunan banners", text: "The banners behind the figures connect the monument to the Katipunan, the secret revolutionary society that organized resistance against Spanish colonial rule." },
+      { x: 38, y: 59, label: "Revolution in public space", text: "The monument places revolutionary memory in the middle of Manila, where a historical struggle can be encountered as part of everyday civic life." },
+      { x: 27, y: 76, label: "A collective memory", text: "The crowded composition refuses a single-hero reading: the monument remembers the people, organizers, and communities whose combined efforts made revolution possible." }
     ]
   },
   {
@@ -437,16 +441,14 @@ function renderSpotlight() {
   spotlight.tags.innerHTML = (art.categories || []).map(name => `<span>${escapeHtml(name)}</span>`).join("");
   spotlight.tags.hidden = !(art.categories || []).length;
 
-  const side = art.media
-    ? `<div class="documentary-card"><iframe src="${escapeHtml(art.media.src)}" title="${escapeHtml(art.media.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><h3>${escapeHtml(art.media.caption)}</h3></div>`
-    : `<div class="spotlight-panel"><div class="spotlight-panel-main"><dl>${(art.facts || []).map(([term, value]) => `<div><dt>${escapeHtml(term)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}</dl><div data-notes-slot></div></div>${art.credit || art.source ? `<p class="spotlight-credit">${art.credit ? `<span>${escapeHtml(art.credit)}</span>` : ""}${art.source ? `<a href="${escapeHtml(art.source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(art.source.label)} ↗</a>` : ""}</p>` : ""}</div>`;
+  const side = `<div class="spotlight-panel"><div class="spotlight-panel-main"><dl>${(art.facts || []).map(([term, value]) => `<div><dt>${escapeHtml(term)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}</dl><div data-notes-slot></div></div>${art.credit || art.source ? `<p class="spotlight-credit">${art.credit ? `<span>${escapeHtml(art.credit)}</span>` : ""}${art.source ? `<a href="${escapeHtml(art.source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(art.source.label)} ↗</a>` : ""}</p>` : ""}</div>`;
   const hotspots = art.hotspots || [];
   const hotspotButtons = hotspots.map((spot, index) =>
     `<button class="hotspot" type="button" data-hotspot="${index}" style="left: ${spot.x}%; top: ${spot.y}%" aria-label="Open detail: ${escapeHtml(spot.label)}"><span aria-hidden="true"></span></button>`
   ).join("");
   const hint = hotspots.length ? `<figcaption class="hotspot-hint">Tap a pulsing point for details</figcaption>` : "";
   const portrait = (Number(art.ratio) || 1.5) < 1 ? " is-portrait" : "";
-  spotlight.feature.innerHTML = `<figure class="spotlight-image${portrait}"><div class="spotlight-canvas" data-spotlight-canvas style="--ratio: ${Number(art.ratio) || 1.5}"><img src="${escapeHtml(art.image)}" alt="${escapeHtml(art.alt)}">${hotspotButtons}</div>${hint}</figure>${side}`;
+  spotlight.feature.innerHTML = `<figure class="spotlight-image${portrait}"><div class="spotlight-canvas" data-spotlight-canvas style="--ratio: ${Number(art.ratio) || 1.5}"><img src="${escapeHtml(art.image)}" alt="${escapeHtml(art.alt)}">${hotspotButtons}</div><button class="spotlight-fullscreen" type="button" data-spotlight-fullscreen aria-label="View ${escapeHtml(art.title)} fullscreen"><svg class="fullscreen-expand-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M3 3l7 7M16 21h5v-5M21 21l-7-7"></path></svg><svg class="fullscreen-exit-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 10H5v5M5 10l6 6M14 14h5v-5M19 14l-6-6"></path></svg></button>${hint}</figure>${side}`;
 
   spotlight.lede.textContent = art.lede || "";
   spotlight.lede.hidden = !art.lede;
@@ -494,6 +496,7 @@ document.querySelector("[data-spotlight-next]").addEventListener("click", () => 
 // Hotspots: open a modal with a cropped close-up of the clicked point plus its text.
 const HOTSPOT_CROP_ZOOM = 2.4;
 const hotspotModal = document.querySelector("[data-hotspot-modal]");
+const hotspotModalParent = hotspotModal.parentNode;
 const hotspotCrop = document.querySelector("[data-hotspot-crop]");
 const hotspotEyebrow = document.querySelector("[data-hotspot-eyebrow]");
 const hotspotTitle = document.querySelector("#hotspot-modal-title");
@@ -535,6 +538,8 @@ function showHotspotDetail(index) {
 
 function openHotspot(button) {
   showHotspotDetail(Number(button.dataset.hotspot));
+  const imageFrame = button.closest(".spotlight-image");
+  if (document.fullscreenElement === imageFrame) imageFrame.appendChild(hotspotModal);
   hotspotModal.hidden = false;
   document.body.classList.add("modal-open");
   hotspotModal.querySelector("[data-close-hotspot]").focus();
@@ -542,6 +547,7 @@ function openHotspot(button) {
 
 function closeHotspot() {
   hotspotModal.hidden = true;
+  if (hotspotModal.parentNode !== hotspotModalParent) hotspotModalParent.appendChild(hotspotModal);
   document.body.classList.remove("modal-open");
   // Return focus to the circle of the detail the visitor ended on.
   const circle = spotlight.feature.querySelector(`[data-hotspot="${hotspotIndex}"]`);
@@ -554,6 +560,31 @@ hotspotNext.addEventListener("click", () => showHotspotDetail(hotspotIndex + 1))
 spotlight.feature.addEventListener("click", event => {
   const button = event.target.closest("[data-hotspot]");
   if (button) openHotspot(button);
+});
+spotlight.feature.addEventListener("click", event => {
+  const button = event.target.closest("[data-spotlight-fullscreen]");
+  if (!button) return;
+  const imageFrame = button.closest(".spotlight-image");
+  if (!imageFrame) return;
+  if (document.fullscreenElement === imageFrame) {
+    document.exitFullscreen().catch(() => {});
+    return;
+  }
+  if (imageFrame.requestFullscreen) {
+    imageFrame.requestFullscreen().catch(() => {});
+  } else {
+    const image = imageFrame.querySelector("img");
+    if (image) window.open(image.src, "_blank", "noopener,noreferrer");
+  }
+});
+document.addEventListener("fullscreenchange", () => {
+  const imageFrame = spotlight.feature.querySelector(".spotlight-image");
+  const button = imageFrame ? imageFrame.querySelector("[data-spotlight-fullscreen]") : null;
+  if (!button) return;
+  const isFullscreen = document.fullscreenElement === imageFrame;
+  if (!isFullscreen && hotspotModal.parentNode !== hotspotModalParent) hotspotModalParent.appendChild(hotspotModal);
+  button.classList.toggle("is-exit", isFullscreen);
+  button.setAttribute("aria-label", isFullscreen ? "Exit fullscreen" : `View ${currentArtwork().title} fullscreen`);
 });
 document.querySelector("[data-close-hotspot]").addEventListener("click", closeHotspot);
 hotspotModal.addEventListener("click", event => {

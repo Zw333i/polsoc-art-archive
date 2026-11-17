@@ -26,7 +26,11 @@
 }
 
 * { box-sizing: border-box; }
-html { background: var(--charcoal); scroll-behavior: smooth; }
+html { background: var(--charcoal); scroll-behavior: smooth; scrollbar-color: #272d30 #111416; scrollbar-width: auto; }
+html::-webkit-scrollbar { width: 12px; }
+html::-webkit-scrollbar-track { background: #111416; }
+html::-webkit-scrollbar-thumb { background: #272d30; border: 3px solid #111416; }
+html::-webkit-scrollbar-thumb:hover { background: #3b4448; }
 body { background: var(--charcoal); color: var(--paper); font-family: var(--body); margin: 0; overflow-x: clip; }
 button, a { font: inherit; }
 a { color: inherit; text-decoration: none; }
@@ -146,6 +150,17 @@ h1 span:nth-child(4) { color: #ded9cf; text-shadow: none; }
 .spotlight-image { --frame-h: 300px; align-items: center; background: #050707; display: flex; height: var(--frame-h); justify-content: center; margin: 0; overflow: hidden; position: relative; }
 .spotlight-canvas { aspect-ratio: var(--ratio); flex: none; position: relative; width: min(100%, calc(var(--frame-h) * var(--ratio))); }
 .spotlight-canvas img { display: block; filter: saturate(.85); height: 100%; width: 100%; }
+.spotlight-image:fullscreen { align-items: center; background: #050707; display: flex; height: 100vh; justify-content: center; width: 100vw; }
+.spotlight-image:fullscreen .spotlight-canvas { height: min(100vh, calc(100vw / var(--ratio))); max-height: 100vh; max-width: 100vw; width: min(100vw, calc(100vh * var(--ratio))); }
+.spotlight-image:fullscreen .spotlight-canvas img { height: 100%; object-fit: contain; width: 100%; }
+.spotlight-image:fullscreen .hotspot-modal { position: absolute; z-index: 31; }
+.spotlight-fullscreen { background: transparent; border: 0; color: var(--paper); cursor: pointer; display: flex; padding: 4px; position: absolute; right: 8px; top: 8px; z-index: 3; }
+.spotlight-fullscreen:hover, .spotlight-fullscreen:focus-visible { color: var(--red); outline: none; }
+.spotlight-image:fullscreen .spotlight-fullscreen { right: 18px; top: 18px; }
+.spotlight-fullscreen .fullscreen-exit-icon { display: none; }
+.spotlight-fullscreen.is-exit .fullscreen-expand-icon { display: none; }
+.spotlight-fullscreen.is-exit .fullscreen-exit-icon { display: block; }
+.spotlight-fullscreen svg { fill: none; height: 24px; stroke: currentColor; stroke-linecap: square; stroke-linejoin: miter; stroke-width: 2; width: 24px; }
 /* Hotspot: a soft translucent white disc that pulses outward. */
 .hotspot { background: transparent; border: 0; cursor: pointer; height: 44px; margin: -22px 0 0 -22px; padding: 0; position: absolute; width: 44px; z-index: 1; }
 .hotspot span { background: rgba(255, 255, 255, .6); border-radius: 50%; display: block; height: 28px; margin: 8px; position: relative; transition: transform .2s ease; width: 28px; }
@@ -182,9 +197,6 @@ h1 span:nth-child(4) { color: #ded9cf; text-shadow: none; }
 .spotlight-arrow:hover, .spotlight-arrow:focus-visible { background: var(--red); border-color: var(--red); outline: none; }
 .spotlight-arrow.is-prev { left: -64px; }
 .spotlight-arrow.is-next { right: -64px; }
-.documentary-card { align-items: center; background: #050707; border: 0; color: var(--paper); display: flex; flex-direction: column; justify-content: center; min-height: 300px; overflow: hidden; padding: 10px; text-align: center; }
-.documentary-card iframe { border: 0; height: 240px; width: 100%; }
-.documentary-card h3 { font: 800 var(--fs-heading)/.95 var(--display); margin: 10px 0 0; text-transform: uppercase; }
 .spotlight-panel { background: #050707; display: flex; flex-direction: column; justify-content: space-between; min-height: 300px; padding: 18px; }
 /* Facts + the show-more button ride together at the top; the credit stays pinned at the bottom. */
 .spotlight-panel-main { display: block; }
@@ -207,10 +219,10 @@ h1 span:nth-child(4) { color: #ded9cf; text-shadow: none; }
    Change the 18px to move it further from / closer to the campaign line. */
 .spotlight-panel .spotlight-notes-toggle { border-top: 0; margin: 18px 0 0; padding-top: 0; }
 .spotlight-panel .spotlight-notes-toggle button { width: 100%; justify-content: space-between; }
-.spotlight-lede { border-left: 3px solid var(--red); color: var(--paper); font-size: var(--fs-body); line-height: 1.6; margin: 22px 0 0; max-width: 760px; padding-left: 14px; }
-.spotlight-quote { border-top: 1px solid var(--line); margin: 24px 0 0; padding-top: 18px; }
+.spotlight-lede { border-left: 3px solid var(--red); color: var(--paper); font-size: var(--fs-body); line-height: 1.6; margin: 22px 0 0; max-width: none; padding-left: 14px; width: 100%; }
+.spotlight-quote { border-top: 0; margin: 24px 0 0; padding-top: 0; width: 100%; }
 .spotlight-quote[hidden] { display: none; }
-.spotlight-quote p { font: 800 var(--fs-heading)/1.05 var(--display); margin: 0; max-width: 780px; text-transform: uppercase; }
+.spotlight-quote p { font: 800 var(--fs-heading)/1.05 var(--display); margin: 0; max-width: none; text-transform: uppercase; width: 100%; }
 .spotlight-quote cite { color: var(--muted); display: block; font: normal 500 var(--fs-label) var(--mono); letter-spacing: .08em; margin-top: 10px; text-transform: uppercase; }
 /* Below this width the spotlight column fills the screen, so the arrows move inside the frame. */
 @media (max-width: 1190px) {
@@ -257,7 +269,11 @@ h1 span:nth-child(4) { color: #ded9cf; text-shadow: none; }
 .archive-card-summary { color: var(--muted); font-size: var(--fs-small); line-height: 1.5; }
 .category-modal { align-items: center; background: rgba(5,7,8,.88); display: flex; inset: 0; justify-content: center; padding: 20px; position: fixed; z-index: 31; }
 .category-modal[hidden] { display: none; }
-.category-modal-panel { background: var(--paper); color: var(--ink); max-height: calc(100vh - 40px); max-width: 560px; overflow-y: auto; padding: 40px; position: relative; width: 100%; }
+.category-modal-panel { background: var(--paper); color: var(--ink); max-height: calc(100vh - 40px); max-width: 560px; overflow-y: auto; padding: 40px; position: relative; scrollbar-color: #272d30 #111416; scrollbar-width: auto; width: 100%; }
+.category-modal-panel::-webkit-scrollbar { width: 12px; }
+.category-modal-panel::-webkit-scrollbar-track { background: #111416; }
+.category-modal-panel::-webkit-scrollbar-thumb { background: #272d30; border: 3px solid #111416; }
+.category-modal-panel::-webkit-scrollbar-thumb:hover { background: #3b4448; }
 /* Category modal: the artworks filed under the category. */
 .category-works { border-top: 1px solid rgba(17, 20, 22, .14); margin-top: 24px; padding-top: 18px; }
 .category-works-label { color: var(--red); font: 500 var(--fs-label) var(--mono); letter-spacing: .08em; margin: 0 0 10px; text-transform: uppercase; }
@@ -301,7 +317,7 @@ h1 span:nth-child(4) { color: #ded9cf; text-shadow: none; }
   .category-modal-panel.hotspot-panel { padding-bottom: 22px; }
   .category-modal-panel.hotspot-panel > :not(.hotspot-media):not(.category-modal-close) { margin-left: 20px; margin-right: 20px; }
   .spotlight-arrow { top: 110px; }
-  .spotlight-panel, .documentary-card { min-height: 0; }
+  .spotlight-panel { min-height: 0; }
   .archive-step { --archive-pad: 20px; }
   .category-modal-panel { padding: 32px 22px 24px; }
   .category-work { grid-template-columns: 56px 1fr; }
