@@ -99,6 +99,51 @@ document.querySelectorAll(".category-card").forEach(card => {
     }
   });
 });
+// Footer category links work like the cards, except they never clear the filter:
+// they filter the spotlight to that category and open its modal.
+document.querySelectorAll("[data-footer-category]").forEach(link => {
+  link.addEventListener("click", event => {
+    event.preventDefault();
+    const name = link.dataset.footerCategory;
+    if (activeCategory !== name) setCategoryFilter(name);
+    openCategory(name);
+  });
+});
+
+// Footer icons: share this page (Facebook, X, email) or copy its link.
+// The share URLs are built from the page's own address, so they work wherever it is hosted.
+const pageUrl = window.location.href.split("#")[0];
+const shareTitle = document.title;
+const shareLinks = {
+  facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`,
+  x: `https://x.com/intent/post?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(shareTitle)}`,
+  email: `mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(pageUrl)}`
+};
+document.querySelectorAll("[data-share]").forEach(link => {
+  link.href = shareLinks[link.dataset.share];
+});
+const copyStatus = document.querySelector("[data-copy-status]");
+let copyStatusTimer = null;
+document.querySelector("[data-copy-link]").addEventListener("click", async () => {
+  let copied = false;
+  try {
+    await navigator.clipboard.writeText(pageUrl);
+    copied = true;
+  } catch {
+    // Clipboard API unavailable (e.g. opened as a local file): fall back to a hidden field.
+    const field = Object.assign(document.createElement("textarea"), { value: pageUrl });
+    field.setAttribute("readonly", "");
+    field.style.cssText = "position: fixed; opacity: 0;";
+    document.body.append(field);
+    field.select();
+    copied = document.execCommand("copy");
+    field.remove();
+  }
+  copyStatus.textContent = copied ? "Link copied" : "Couldn't copy the link";
+  window.clearTimeout(copyStatusTimer);
+  copyStatusTimer = window.setTimeout(() => { copyStatus.textContent = ""; }, 2500);
+});
+
 categoryWorks.addEventListener("click", event => {
   const button = event.target.closest("[data-goto-artwork]");
   if (!button) return;
@@ -148,13 +193,13 @@ const artworks = [
       text: "Which love could ever surpass, in purity and greatness, the love of one’s native land? Which love? None, truly none.",
       cite: "Andres Bonifacio, “Pag-ibig sa Tinubuang Lupa” (Kalayaan, 1896; English translation)"
     },
-    ratio: 1200 / 800,
+    ratio: 1248 / 832,
     hotspots: [
-      { x: 63, y: 27, label: "Bonifacio’s call", text: "Bonifacio stands above the gathered figures with his bolo raised, turning the monument’s central gesture into a call for courage and collective action." },
-      { x: 57, y: 66, label: "The gathered revolutionaries", text: "The figures below him make the struggle collective rather than individual. Their different poses suggest a people assembling around a shared demand for freedom." },
-      { x: 79, y: 37, label: "The Katipunan banners", text: "The banners behind the figures connect the monument to the Katipunan, the secret revolutionary society that organized resistance against Spanish colonial rule." },
-      { x: 38, y: 59, label: "Revolution in public space", text: "The monument places revolutionary memory in the middle of Manila, where a historical struggle can be encountered as part of everyday civic life." },
-      { x: 27, y: 76, label: "A collective memory", text: "The crowded composition refuses a single-hero reading: the monument remembers the people, organizers, and communities whose combined efforts made revolution possible." }
+      { x: 42, y: 27, label: "Bonifacio’s call", text: "Bonifacio stands above the gathered figures with his bolo raised, turning the monument’s central gesture into a call for courage and collective action." },
+      { x: 37, y: 66, label: "The gathered revolutionaries", text: "The figures below him make the struggle collective rather than individual. Their different poses suggest a people assembling around a shared demand for freedom." },
+      { x: 59, y: 36, label: "The Katipunan banners", text: "The banners behind the figures connect the monument to the Katipunan, the secret revolutionary society that organized resistance against Spanish colonial rule." },
+      { x: 7, y: 87, label: "Revolution in public space", text: "The monument places revolutionary memory in the middle of Manila, where a historical struggle can be encountered as part of everyday civic life." },
+      { x: 66, y: 55, label: "A collective memory", text: "The crowded composition refuses a single-hero reading: the monument remembers the people, organizers, and communities whose combined efforts made revolution possible." }
     ]
   },
   {
@@ -177,6 +222,8 @@ const artworks = [
     ],
     ratio: 939 / 528,
     hotspots: [
+      { x: 27, y: 30, label: "Horns made of bullets", text: "Two bullets rise from Duterte’s head like a devil’s horns. They stand for the killings of his war on drugs: the government counted over 6,000 people killed in police operations, and human rights groups estimate the toll at up to 30,000. In March 2025 Duterte was arrested and surrendered to the International Criminal Court in The Hague, charged with crimes against humanity over those killings." },
+      { x: 31, y: 80, label: "The iron fist", text: "Duterte’s arm, in a soldier’s camouflage sleeve, ends in a riveted iron gauntlet. It is the mural’s literal picture of the “iron fist” his presidency was known for: tokhang raids, Martial Law in Mindanao and rule by force. And it is the same iron hand that holds up the platter, serving the country to foreign powers." },
       { x: 47, y: 55, label: "The feast", text: "An iron-gloved Rodrigo Duterte offers the archipelago on a silver platter while Uncle Sam and a figure representing China reach in with spoon and chopsticks, and America refuses to share the plate. Pulutan is the food passed around at a drinking session; here the nation itself is the snack." },
       { x: 77, y: 80, label: "Issues around the table", text: "Around the feast sit the issues of the day: bomb-ravaged Marawi, the jeepney phase-out and the tax reform law. The wall faces the UP-Ikot jeepney route and the nearby communities of Krus na Ligas and Village A, so the work speaks well beyond campus." }
     ],
@@ -336,6 +383,364 @@ const artworks = [
     quote: {
       text: "Martial Law was lifted in September 17, 1981, but freedom and democracy were not truly restored.",
       cite: "Ateneo Martial Law Museum, “Visual Literacy & Social Realism” lesson on Krista"
+    }
+  },
+  {
+    id: "filipino-struggles-through-history",
+    categories: ["The K.K.K. Revolution", "Colonialism's End"],
+    title: "Filipino Struggles Through History",
+    year: "1964",
+    image: "assets/Filipino_struggles_throughout_history.png",
+    alt: "Detail of Botong Francisco’s mural: a Katipunan leader in white, arm flung forward, leads a surge of revolutionaries armed with bamboo spears and bolos beneath a red banner",
+    fit: "cover",
+    credit: "Detail · Carlos “Botong” Francisco · City of Manila",
+    source: { label: "View on Wikipedia", url: "https://en.wikipedia.org/wiki/Filipino_Struggles_Through_History" },
+    meta: "1964 · Oil on canvas · National Museum of Fine Arts, Manila",
+    summary: "Botong Francisco’s 79-meter mural of Manila’s history, here at the moment the Katipunan rises.",
+    lede: "A portrayal of a people’s long march toward freedom, where Botong Francisco carries Manila’s history from pre-colonial Tondo to the end of American rule in 1946 across ten panels, and the Katipunan’s uprising bursts forward in a wave of raised arms, spears and bolos.",
+    facts: [
+      ["Title", "Filipino Struggles Through History (also known as “History of Manila”)"],
+      ["Year", "Commissioned 1964; installed at Manila City Hall 1968"],
+      ["Artist", "Carlos “Botong” Francisco, National Artist for Visual Arts"],
+      ["Medium", "Oil on canvas, 10 panels, 2.7 × 79.4 m"],
+      ["Collection", "National Museum of Fine Arts, Manila (owned by the City of Manila); a National Cultural Treasure since 1996"]
+    ],
+    ratio: 249 / 133,
+    cropZoom: 1.5,
+    hotspots: [
+      { x: 50, y: 28, label: "The Katipunan rises", text: "At the center of this detail, a Katipunan leader in white flings his arm forward and leads the charge. The mural’s panels move from the Tondo period to the end of the American colonial era in 1946, and the Revolution of 1896 is its turning point." },
+      { x: 28, y: 72, label: "Spears and bolos", text: "Behind him the people surge forward with bamboo spears and bolos, the weapons of a revolution fought by farmers and workers rather than a trained army. Francisco paints them as one rushing current, not a row of individual heroes." },
+      { x: 17, y: 30, label: "A mural for the city", text: "The Manila City Government commissioned the work in 1964 under Mayor Antonio Villegas, and it hung in City Hall from 1968. Damaged by leaks, it was restored from 2013 to 2015 and moved to the National Museum of Fine Arts in 2018." }
+    ]
+  },
+  {
+    id: "itak-sa-puso-ni-mang-juan",
+    categories: ["Art & Activism", "Labor & Land"],
+    title: "Itak sa Puso ni Mang Juan",
+    year: "1978",
+    image: "assets/Itak-sa-Puso-ni-Mang-Juan.png",
+    alt: "Painting of an older Filipino man in a work shirt, hand pressed to his side, before a giant red Coca-Cola sign whose white ribbon cuts across him like a blade",
+    fit: "cover",
+    credit: "Antipas Delotavo",
+    source: { label: "Read on Imahica", url: "https://imahica.art/social-realism-in-the-philippines-an-artistic-response-to-societal-issues/" },
+    meta: "1978 · Painting · Antipas Delotavo",
+    summary: "A bolo in the heart of the everyman: social realism against the foreign brands that bleed the poor.",
+    lede: "A portrayal of the common Filipino wounded by an economy built for others, where Mang Juan, the everyman, walks bent and hurting beneath a Coca-Cola sign whose white ribbon slices across him like the bolo of the title, painted in 1978 under Marcos’s Martial Law.",
+    facts: [
+      ["Title", "Itak sa Puso ni Mang Juan (A Bolo in Mang Juan’s Heart)"],
+      ["Year", "1978"],
+      ["Artist", "Antipas Delotavo"],
+      ["Movement", "Philippine social realism"]
+    ],
+    ratio: 255 / 198,
+    cropZoom: 1.5,
+    hotspots: [
+      { x: 24, y: 22, label: "The Coca-Cola wall", text: "Most of the canvas is given over to a red Coca-Cola sign. Delotavo turns one of the most familiar American brands into a backdrop that dwarfs the man in front of it, as foreign capital dwarfed ordinary Filipinos in the 1970s economy." },
+      { x: 50, y: 45, label: "Reg. Phil.", text: "Delotavo keeps the small trademark text, “Reg. Phil.”, registered in the Philippines. The brand is legally at home here, while the people who buy it remain poor." },
+      { x: 77, y: 62, label: "Mang Juan", text: "“Mang” is a term of respect for an older man, and Juan stands for Juan dela Cruz, the Filipino everyman. He presses a hand to his body as if wounded, and the logo’s white ribbon cuts across him like an itak, a bolo, driven into his heart." }
+    ],
+    quote: {
+      text: "a peasant’s heart, metaphorically stabbed by a bolo knife, symbolizing the pervasive violence and suffering inflicted upon the rural poor.",
+      cite: "Cherry Fulgar, “Social Realism in the Philippines,” Imahica Art"
+    }
+  },
+  {
+    id: "crossing-black",
+    categories: ["Colonialism's End"],
+    title: "Crossing B(l)ack",
+    year: "2017",
+    image: "assets/crossing black.png",
+    alt: "Photograph of the artist, her skin painted black, wrapped in a red veil and bright flower-patterned cloth that spreads across the floor, against a black background",
+    fit: "contain",
+    credit: "Emília Rigová · RESIST! The Art of Resistance",
+    source: { label: "Read on ERIAC", url: "https://eriac.org/the-art-of-resistance-resistance-through-art/" },
+    meta: "2017 · Digital print · Emília Rigová",
+    summary: "A Roma artist claims her origins, featured in RESIST! The Art of Resistance in Cologne.",
+    lede: "A portrayal of a people reclaiming their own image, where Roma artist Emília Rigová returns to Roma matriarchal mythology and openly claims her origins, part of an exhibition that read 500 years of anti-colonial struggle, identity and resilience against historical oppression.",
+    facts: [
+      ["Title", "Crossing B(l)ack"],
+      ["Year", "2017"],
+      ["Artist", "Emília Rigová, Slovak Roma artist"],
+      ["Medium", "Digital print"],
+      ["Exhibited", "RESIST! The Art of Resistance, Rautenstrauch-Joest Museum, Cologne, 1 April – 5 September 2021 (section “Roma RESIST!”, curated by Tímea Junghaus)"]
+    ],
+    ratio: 765 / 722,
+    hotspots: [
+      { x: 43, y: 19, label: "Crossing back, crossing black", text: "The title folds two words together. Crossing back: a return to Roma origins and to a matriarchal mythology. Black: the colour the artist has painted over her own skin, the colour long used to mark Roma as outsiders in Europe." },
+      { x: 42, y: 62, label: "Robed like a matriarch", text: "Rigová wraps herself in a red veil and bright, flower-patterned cloth that pools across the floor, posing like an icon. The figure is not a victim to be studied but a mother-figure who commands the frame." },
+      { x: 82, y: 30, label: "Turning the museum around", text: "RESIST! was staged in an ethnographic museum, the kind of institution that once displayed colonised peoples as specimens. The Roma section answered that colonial gaze with work by Roma artists themselves, telling a history of resistance instead of oppression." }
+    ],
+    quote: {
+      text: "The Sinti and Roma constitute the largest internal colony of Europe.",
+      cite: "Tímea Junghaus, curator, “Roma RESIST!” (via ERIAC)"
+    }
+  },
+  {
+    id: "man-with-a-hoe",
+    categories: ["Labor & Land"],
+    title: "Man with a Hoe",
+    year: "1860–62",
+    image: "assets/Millet,_Jean-François_-_Man_with_a_Hoe_-_Google_Art_Project.jpg",
+    alt: "Painting of an exhausted farm labourer leaning on his hoe in a stony field of thistles, smoke rising from fires on the horizon",
+    fit: "cover",
+    credit: "Jean-François Millet · J. Paul Getty Museum",
+    source: { label: "View on Wikipedia", url: "https://en.wikipedia.org/wiki/Man_with_a_Hoe" },
+    meta: "1860–62 · Oil on canvas · J. Paul Getty Museum, Los Angeles",
+    summary: "A labourer pauses in a field of stones and thistles: Millet’s unflinching picture of rural toil.",
+    lede: "A portrayal of labour without romance, where a weary farm worker leans on his hoe in a field of stones and thistles, a picture that cast a critical light on the conditions of rural labour in Second Empire France and shocked the critics who first saw it.",
+    facts: [
+      ["Title", "Man with a Hoe (L’homme à la houe)"],
+      ["Year", "1860–1862"],
+      ["Artist", "Jean-François Millet, French Realist painter"],
+      ["Medium", "Oil on canvas, 81.9 × 100.3 cm"],
+      ["Collection", "J. Paul Getty Museum, Los Angeles"]
+    ],
+    ratio: 960 / 776,
+    hotspots: [
+      { x: 44, y: 17, label: "The weary face", text: "Mouth open, eyes unfocused, the labourer stops to catch his breath. When the painting was shown at the Paris Salon of 1863, the critic Paul de Saint-Victor wrote that there was “no gleam of human intelligence in this animal.” Millet had refused to make the poor pretty." },
+      { x: 45, y: 53, label: "Hands on the hoe", text: "Both hands rest on the hoe’s handle, holding up a body that has nothing left. In 1898 the painting inspired Edwin Markham’s poem “The Man with the Hoe,” which made the worker a symbol of exploited labour across the United States." },
+      { x: 8, y: 62, label: "Thistles and thorns", text: "In the left foreground grow thistles and thorns, said to suggest barrenness, toil and pain, even the Passion of Christ. The land gives back only what is wrenched from it." },
+      { x: 86, y: 47, label: "Fires on the horizon", text: "In the distance smoke rises from fires across the flat fields, and another small figure works the land. The labourer is one of many." }
+    ],
+    quote: {
+      text: "Bowed by the weight of centuries he leans / Upon his hoe and gazes on the ground, / The emptiness of ages in his face, / And on his back the burden of the world.",
+      cite: "Edwin Markham, “The Man with the Hoe” (1899), written after Millet’s painting"
+    }
+  },
+  {
+    id: "puro-kahig-walang-matuka",
+    categories: ["Labor & Land"],
+    title: "Puro Kahig, Walang Matuka",
+    year: "2023",
+    image: "assets/Puro-KahigWalang-Matuka-2023-Jowee-Aguinaldo-MADE-1.jpg",
+    alt: "Painting of four farmers in red, white, blue and yellow shirts bent beneath plastic chairs so their backs form a table holding empty plates, surrounded by a hungry crowd holding spoons",
+    fit: "cover",
+    credit: "Jowee Ann Aguinaldo · Image courtesy of Metrobank Foundation (MADE)",
+    source: { label: "Read on VERA Files", url: "https://verafiles.org/articles/pastoral-vs-brutal-the-filipino-farmer-in-art" },
+    meta: "2023 · Oil/acrylic painting · Jowee Ann Aguinaldo",
+    summary: "The farmers who feed the nation, bent into a table for others, while their own plates stay empty.",
+    lede: "A portrayal of those who feed the nation and still go hungry, where four farmers bend until their backs become a table, the plates on them empty, while a crowd waits with spoons in hand.",
+    facts: [
+      ["Title", "Puro Kahig, Walang Matuka (All Scratch, No Peck)"],
+      ["Year", "2023"],
+      ["Artist", "Jowee Ann M. Aguinaldo, a UP Los Baños agricultural economics graduate"],
+      ["Medium", "Oil/acrylic painting"],
+      ["Award", "Grand Award, oil/acrylic painting, 2023 Metrobank Art & Design Excellence (MADE)"]
+    ],
+    ratio: 804 / 526,
+    hotspots: [
+      { x: 37, y: 34, label: "A table of backs", text: "The farmers bend over beneath plastic chairs until their backs form a table, and on it sit three empty plates. The title twists the saying “isang kahig, isang tuka” (one scratch, one peck), the hand-to-mouth life of the poor: here there is all scratching and nothing to eat." },
+      { x: 55, y: 30, label: "Red, white, blue and yellow", text: "The farmers’ shirts are red, white, blue and yellow, the colours of the Philippine flag. The nation itself is bent over, carrying the meal." },
+      { x: 86, y: 47, label: "Spoons in hand", text: "Around them a crowd of children and adults wait with spoons and empty stomachs. In the year the work was painted, SWS surveys found involuntary hunger rising, from 9.8% of families in September 2023 to 14.2% in early 2024." },
+      { x: 65, y: 88, label: "Still planting", text: "Even bent double, one farmer’s hands are still pressing rice seedlings into the ground. The work never stops, and still the plates stay empty." }
+    ],
+    quote: {
+      text: "it is hard to think that those who feed our nation are the poorest.",
+      cite: "Jowee Ann Aguinaldo (via VERA Files, 2024)"
+    }
+  },
+  {
+    id: "we-resist",
+    categories: ["Art & Activism", "Labor & Land"],
+    title: "WE Resist!",
+    year: "2023",
+    image: "assets/2023-Women_s-Month-Photo-by-Kevin-Roque-1536x736.png",
+    alt: "Mural of three women educators with raised fists under the words Defend Academic Freedom, Fight for Union Rights, flanked by protesters with placards reading Sahod Itaas Presyo Baba and Bigas Hindi Bala",
+    fit: "cover",
+    credit: "Photo by Kevin Roque, UP MPRO",
+    source: { label: "Read on UP Forum", url: "https://up.edu.ph/revolutionary-walls-the-activists-canvas/" },
+    meta: "2023 · Mural · UP Diliman, Quezon City",
+    summary: "A Women’s Month tribute to educators who stood up to state attacks: defend academic freedom, fight for union rights.",
+    lede: "A portrayal of women educators refusing to be silenced, where three teachers raise their fists in defence of academic freedom and union rights, painted for Women’s Month as a tribute to educators UP Forum describes as survivors of state repression.",
+    facts: [
+      ["Title", "“WE Resist!” (Women Educators Resisting State Attacks)"],
+      ["Year", "2023"],
+      ["Artist", "Armand Dayoha, UP Cebu lecturer and development worker"],
+      ["Honours", "UP Professor Melania Flores, ACT Region VII coordinator Dyan Gumanao, and ACT Teachers Party-list Representative France Castro"],
+      ["Site", "University of the Philippines Diliman, Quezon City"]
+    ],
+    ratio: 1536 / 736,
+    hotspots: [
+      { x: 49, y: 22, label: "Defend academic freedom", text: "“Defend Academic Freedom, Fight for Union Rights!” The mural ties the right to teach and think freely to the right of teachers to organise, both under attack through red-tagging and harassment of educators." },
+      { x: 44, y: 60, label: "Three women educators", text: "The mural honours UP Professor Melania Flores, UP alumna and ACT Region VII coordinator Dyan Gumanao, and ACT Teachers Party-list Representative France Castro. In January 2024, Gumanao and the mural’s artist, Armand Dayoha, went through what UP Forum calls an “unjust abduction by state forces” in Cebu City." },
+      { x: 11, y: 83, label: "Sahod itaas, presyo ibaba", text: "“Raise wages, lower prices!” The protesters behind the teachers carry the demands of workers too, linking the classroom to the cost of living." },
+      { x: 89, y: 84, label: "Bigas, hindi bala", text: "“Rice, not bullets!” A farmer in a wide straw hat carries the slogan, calling for food and land instead of militarisation in the countryside." }
+    ]
+  },
+  {
+    id: "maki-usisa-makibaka-makilahok",
+    categories: ["Art & Activism"],
+    title: "Maki-Usisa, Makibaka, Makilahok",
+    year: "2013",
+    image: "assets/Maki-Usisa, Makibaka, Makilahok (2013).png",
+    alt: "Night photograph of a red and black mural of art students holding a camera, sketchbook, book and easel under the words Makiusisa, Makibaka, Makilahok, with artists painting it from a ladder",
+    fit: "cover",
+    credit: "Photo by Aldrich Alarilla",
+    source: { label: "Read on UP Forum", url: "https://up.edu.ph/revolutionary-walls-the-activists-canvas/" },
+    meta: "2013 · Mural · UP College of Fine Arts, Diliman",
+    summary: "Gerilya’s call to Fine Arts students: inquire, struggle, take part.",
+    lede: "A portrayal of the artist as citizen, where the Gerilya collective paints Fine Arts students in front of a storm of current events and calls on them to inquire, to struggle and to take part, one of the first works to remake the Fine Arts wall into a public canvas.",
+    facts: [
+      ["Title", "Maki-Usisa, Makibaka, Makilahok (Inquire, Struggle, Take Part)"],
+      ["Year", "2013"],
+      ["Made by", "Gerilya artist collective"],
+      ["Site", "Fine Arts Wall, UP College of Fine Arts, Diliman, Quezon City"],
+      ["Medium", "Mural"]
+    ],
+    ratio: 1140 / 641,
+    hotspots: [
+      { x: 49, y: 30, label: "Three calls", text: "“Makiusisa. Makibaka. Makilahok.” Inquire, struggle, take part: three steps from curiosity to action, painted across the top of the wall like a slogan on a banner." },
+      { x: 41, y: 72, label: "The students", text: "In the foreground stand the diverse spectrum of Fine Arts students, holding a camera, a sketchbook, a book, a cap and an easel. The tools of art-making become tools of engagement." },
+      { x: 35, y: 31, label: "The background", text: "Behind the students, a dense red field of faces, crowds and fists encapsulates the current events of the time. The students do not stand apart from the news; they stand in front of it." },
+      { x: 68, y: 52, label: "The wall in progress", text: "The photograph catches artists at work on a ladder and at the base of the wall. Gerilya was among the first to redefine the Fine Arts wall, which later carried commentary on the killings of Lumad and the Kidapawan farmers’ massacre." }
+    ],
+    quote: {
+      text: "The wall is alive. It continually evolves, reflecting the nation’s pressing concerns.",
+      cite: "Ides Josepina D. Macapanpan, UP Baguio (via UP Forum, 2024)"
+    }
+  },
+  {
+    id: "super-el-nino-pax-silica",
+    categories: ["Labor & Land", "Colonialism's End"],
+    title: "Super El Niño, Pax Silica",
+    year: "2026",
+    image: "assets/el nino pax sili.jpg",
+    alt: "Editorial cartoon: a sun in sunglasses labelled Super El Niño and Uncle Sam in a Pax Silica hat both sip through straws from one glass of water, where a small Filipino farmer in a salakot stands with a bucket",
+    fit: "contain",
+    credit: "#CartoonOnPoint by Glaiza Barcela · Explained PH",
+    source: { label: "Context: Pax Silica’s water needs (Daily Tribune)", url: "https://tribune.net.ph/2026/08/14/up-90-million-liters-of-water-per-day-needed-for-us-backed-pax-silica-says-bcda" },
+    meta: "2026 · Editorial cartoon · Explained PH",
+    summary: "Drought and a foreign tech hub, drinking from the same glass, while the farmer is left holding the bucket.",
+    lede: "A portrayal of a country’s water being drained from two sides, where a Super El Niño and Uncle Sam’s Pax Silica sip from the same glass, and the Filipino farmer at the bottom is left with an empty bucket.",
+    facts: [
+      ["Title", "Untitled #CartoonOnPoint (titled here from the words in the cartoon)"],
+      ["Year", "2026"],
+      ["Cartoonist", "Glaiza Barcela"],
+      ["Published by", "Explained PH"],
+      ["Medium", "Digital editorial cartoon"]
+    ],
+    ratio: 1200 / 1500,
+    hotspots: [
+      { x: 23, y: 20, label: "Super El Niño", text: "A grinning sun in sunglasses wears the words “Super El Niño”. El Niño brings drier months to the Philippines, and in 2026 a very strong one settled over the country." },
+      { x: 73, y: 29, label: "Pax Silica", text: "Uncle Sam’s top hat reads “Pax Silica”, the US-led semiconductor and AI supply-chain pact the Philippines joined in April 2026. Its planned hub in New Clark City, Tarlac, may need up to 90 million liters of water a day, according to the Bases Conversion and Development Authority." },
+      { x: 36, y: 56, label: "Two straws, one glass", text: "Both drink from the same glass, through two straws. A chip industry runs on huge volumes of clean water, and here it competes with the drought for the same shrinking supply." },
+      { x: 50, y: 78, label: "The farmer at the bottom", text: "Inside the glass, a tiny farmer in a salakot stands with a bucket, staring up with a “?!”. Central Luzon’s farms depend on the same water, and they are the first to go without." }
+    ]
+  },
+  {
+    id: "the-sweetest-trap",
+    categories: ["Labor & Land", "Colonialism's End"],
+    title: "The Sweetest Trap",
+    year: "2026",
+    image: "assets/The Sweetest Trap.png",
+    alt: "Editorial cartoon: a giant Venus flytrap marked Pax Silica, its roots made of torn red, blue and yellow wires, arches over a weeping sapling in a straw hat wilting in a clay pot",
+    fit: "contain",
+    credit: "Cartoon by Agilis Capon · The Industrial Wheel, EVSU",
+    source: { label: "Read on The Industrial Wheel", url: "https://spoiw.evsu.edu.ph/the-sweetest-trap" },
+    meta: "2026 · Editorial cartoon · The Industrial Wheel, EVSU",
+    summary: "Pax Silica as a Venus flytrap: sweet promises that swallow the farmer’s ground.",
+    lede: "A portrayal of a promise that devours, where Pax Silica grows into a Venus flytrap that looms over a weeping sapling in a farmer’s hat, a warning from the student press that the sweetest offers deserve the hardest look.",
+    facts: [
+      ["Title", "The Sweetest Trap"],
+      ["Year", "2026"],
+      ["Cartoonist", "Agilis Capon"],
+      ["Published by", "The Industrial Wheel, the student publication of Eastern Visayas State University"],
+      ["Medium", "Digital editorial cartoon"]
+    ],
+    ratio: 1536 / 1536,
+    hotspots: [
+      { x: 79, y: 36, label: "The flytrap", text: "The trap’s jaws spell “Pax Silica”. The US launched the pact in December 2025; in April 2026 the Philippines became the 13th country to join, with plans for a 1,620-hectare industrial hub in New Clark City, reported to be offered at first rent-free." },
+      { x: 47, y: 49, label: "The wilting sapling", text: "A thin sapling in a farmer’s straw hat weeps as its leaves fall, its pot cracked and its soil drying out. Farmland is what the hub stands to replace." },
+      { x: 37, y: 70, label: "Roots of wire", text: "The flytrap’s roots are torn electrical wires in red, blue and yellow, sparking as they pull from the ground: the chip industry rooted in Philippine soil, in the colours of the Philippine flag." }
+    ],
+    quote: {
+      text: "The sweetest promises often demand the highest price.",
+      cite: "The Industrial Wheel, “The Sweetest Trap” (editorial, 2026)"
+    }
+  },
+  {
+    id: "ube-buried-under-struggles",
+    categories: ["Labor & Land"],
+    title: "Ube",
+    year: "2026",
+    image: "assets/ube.png",
+    alt: "Editorial cartoon: a farmer stands half-buried in cracked earth, a pan labelled Global Demand piled with sacks and a purple ube pressing down on his head, hung from a spinning roll of dollar signs and rising prices",
+    fit: "contain",
+    credit: "#CartoonOnPoint by Glaiza Barcela · Explained PH",
+    source: { label: "View on Explained PH", url: "https://explained.ph/as-ube-becomes-more-popular-and-expensive-globally-the-farmers-remained-buried-under-struggles/" },
+    meta: "2026 · Editorial cartoon · Explained PH",
+    summary: "Ube goes global and its price climbs, while the farmer who grows it stays buried.",
+    lede: "A portrayal of a boom that never reaches the field, where global demand for ube piles onto a farmer’s head as prices spin upward above him, and he is left sunk in the cracked earth he tills.",
+    facts: [
+      ["Title", "As Ube Becomes More Popular and Expensive Globally, the Farmers Remained Buried Under Struggles"],
+      ["Year", "2026"],
+      ["Cartoonist", "Glaiza Barcela"],
+      ["Published by", "Explained PH (#CartoonOnPoint)"],
+      ["Medium", "Digital editorial cartoon"]
+    ],
+    ratio: 870 / 1087,
+    hotspots: [
+      { x: 48, y: 20, label: "Prices on a roll", text: "A roll printed with dollar signs and numbers spins upward, an arrow climbing off its side: ube’s price rising on the world market." },
+      { x: 49, y: 66, label: "Global demand", text: "From the roll hangs a pan marked “Global Demand”, heaped with sacks and a fat purple ube. All of its weight comes down on one place." },
+      { x: 53, y: 85, label: "The farmer beneath", text: "Under the pan, a farmer with a towel on his shoulder stands sunk to the chest in cracked, dry earth, holding up the whole load on his head. The boom passes over him; the struggle stays." }
+    ]
+  },
+  {
+    id: "hawak-ang-lisensya",
+    categories: ["Labor & Land"],
+    title: "Hawak ang Lisensya, Ba’t Sinita?",
+    year: "2025",
+    image: "assets/Hawak ang Lisensya Bat Sinita.png",
+    alt: "Editorial cartoon: a tearful street vendor clutches a glowing paper marked License beside his siomai cart as a giant hand marked SSB scoops them both up in a net",
+    fit: "contain",
+    credit: "#CartoonOnPoint by Johann Kristoffer Rivera · Explained PH",
+    source: { label: "View on Explained PH", url: "https://explained.ph/hawak-ang-lisensya-bat-sinita/" },
+    meta: "2025 · Editorial cartoon · Explained PH",
+    summary: "A licensed siomai vendor caught in the net anyway: the crackdown that falls on the poorest workers.",
+    lede: "A portrayal of the street vendor who follows the rules and is caught anyway, where a siomai seller clutches his licence as a giant hand sweeps him and his cart into a net.",
+    facts: [
+      ["Title", "Hawak ang Lisensya, Ba’t Sinita? (Holding a Licence, So Why Was I Stopped?)"],
+      ["Year", "2025"],
+      ["Cartoonist", "Johann Kristoffer Rivera"],
+      ["Published by", "Explained PH (#CartoonOnPoint)"],
+      ["Medium", "Digital editorial cartoon"]
+    ],
+    ratio: 1230 / 870,
+    hotspots: [
+      { x: 46, y: 54, label: "The licence", text: "The vendor holds up his licence like a shield, glowing in his hands, and it changes nothing. The title asks the question for him: if I have my licence, why was I stopped?" },
+      { x: 56, y: 38, label: "The siomai cart", text: "Steamers and a red cart marked “Siomai”: a small, everyday livelihood of the informal economy, swept into the net along with its owner." },
+      { x: 88, y: 38, label: "The net", text: "A giant fist marked “SSB” swings the net. The enforcer is drawn as a hand without a face, too big to argue with." }
+    ]
+  },
+  {
+    id: "larong-pampalakasan",
+    categories: ["Press Freedom"],
+    title: "Larong Pampalakasan Bilang Panata ng Katotohanan",
+    year: "2025",
+    image: "assets/Larong Pampalakasan.jpg",
+    alt: "Editorial cartoon: a giant hand screws a school building topped with the Philippine flag onto a cracked glass jar, trapping three student journalists inside, an athlete, a photographer and a writer with a pencil",
+    fit: "contain",
+    credit: "#CartoonOnPoint by Princess Efondo · Explained PH",
+    source: { label: "Read on Explained PH", url: "https://explained.ph/editoryal-larong-pampalakasan-bilang-panata-ng-katotohanan/" },
+    meta: "2025 · Editorial cartoon · Explained PH",
+    summary: "Student journalists bottled up by their own schools, and a sports page that refuses to soften the score.",
+    lede: "A portrayal of a campus press kept under a lid, where the school itself seals student journalists in a jar, and an editorial argues that the sports page, where a loss is simply a loss, shows what honest reporting looks like.",
+    facts: [
+      ["Title", "Larong Pampalakasan Bilang Panata ng Katotohanan (Sports as a Pledge to Truth)"],
+      ["Year", "2025"],
+      ["Cartoonist", "Princess Efondo"],
+      ["Published by", "Explained PH (editorial)"],
+      ["Medium", "Digital editorial cartoon"]
+    ],
+    ratio: 1230 / 870,
+    hotspots: [
+      { x: 46, y: 21, label: "The school as a lid", text: "A giant hand screws a school building, flying the Philippine flag, down onto the jar like a lid. The editorial recalls how an issue of The Bedan, San Beda’s student paper, was not allowed to be printed in 2018 after it ran an article critical of the administration." },
+      { x: 35, y: 66, label: "The sports desk", text: "One of the trapped students wears an athlete’s jersey pinned with a ball. The editorial holds up sports writing as the model: the scoreboard does not lie, so there is no euphemism to add. It cites the 2025 UAAP, where UE’s volleyball players were left without scholarships after the loss of a sponsor." },
+      { x: 62, y: 66, label: "Camera and pencil", text: "A photographer and a writer push against the cracking glass. The Campus Journalism Act of 1991 was meant to protect them, but the editorial argues it has never been fully enforced." }
+    ],
+    quote: {
+      text: "Hindi nagsisinungaling ang scoreboard — walang kailangang idagdag na eufemismo. (The scoreboard does not lie; there is no euphemism to add.)",
+      cite: "Explained PH, “Larong pampalakasan bilang panata ng katotohanan” (editorial, 2025)"
     }
   }
 ];

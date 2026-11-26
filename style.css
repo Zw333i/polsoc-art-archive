@@ -295,6 +295,31 @@ h1 span:nth-child(4) { color: #ded9cf; text-shadow: none; }
 
 .context-note { color: black !important; font: 500 var(--fs-small)/1.6 var(--mono) !important; margin-top: 23px !important; }
 
+/* Footer: brand on the left, four plain link columns on the right, a rule, then a
+   centred row of round icon buttons and the copyright line. */
+.site-footer { --footer-pad: clamp(22px, 6vw, 96px); background: #121212; border-top: 1px solid var(--line); color: var(--paper); padding: clamp(48px, 6vw, 72px) var(--footer-pad) clamp(40px, 5vw, 64px); position: relative; }
+.footer-inner { margin: 0 auto; max-width: 1200px; }
+.footer-top { align-items: start; border-bottom: 1px solid rgba(232, 228, 220, .35); display: flex; gap: 40px; justify-content: space-between; padding-bottom: clamp(40px, 5vw, 56px); }
+.footer-brand { display: grid; gap: 8px; }
+.footer-logo { font: 700 26px/1 var(--body); letter-spacing: .12em; }
+.footer-tagline, .footer-columns a { font: 500 var(--fs-label)/1.4 var(--body); letter-spacing: .1em; text-transform: uppercase; }
+.footer-columns { display: flex; gap: clamp(32px, 6vw, 88px); }
+.footer-columns ul, .footer-icons { list-style: none; margin: 0; padding: 0; }
+.footer-columns ul { display: grid; gap: 6px; align-content: start; }
+.footer-columns a { color: var(--paper); transition: color .2s ease; }
+.footer-brand:hover .footer-logo, .footer-brand:focus-visible .footer-logo, .footer-columns a:hover, .footer-columns a:focus-visible { color: var(--red); outline: none; }
+.footer-icons { display: flex; gap: 10px; justify-content: center; margin-top: clamp(40px, 5vw, 60px); }
+.footer-icon { align-items: center; background: transparent; border: 1px solid rgba(232, 228, 220, .85); border-radius: 50%; color: var(--paper); cursor: pointer; display: flex; height: 36px; justify-content: center; padding: 0; transition: background .2s ease, border-color .2s ease, color .2s ease; width: 36px; }
+.footer-icon svg { fill: none; height: 16px; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.6; width: 16px; }
+.footer-icon svg .is-solid { fill: currentColor; stroke: none; }
+.footer-icon:hover, .footer-icon:focus-visible { background: var(--red); border-color: var(--red); color: #fff; outline: none; }
+.footer-copy { color: rgba(232, 228, 220, .8); font-size: var(--fs-small); margin: 18px 0 0; text-align: center; }
+.footer-status { color: var(--red); font: 500 var(--fs-label) var(--mono); letter-spacing: .08em; margin: 8px 0 0; min-height: 1em; text-align: center; text-transform: uppercase; }
+@media (max-width: 760px) {
+  .footer-top { flex-direction: column; gap: 32px; }
+  .footer-columns { display: grid; gap: 22px 32px; grid-template-columns: 1fr 1fr; }
+}
+
 @media (max-width: 700px) {
   .site-header { padding-left: 12px; padding-right: 12px; }
   .reference-nav { gap: 12px; }
